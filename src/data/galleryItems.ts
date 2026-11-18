@@ -8,15 +8,10 @@ export interface GalleryPhoto {
 }
 
 export const GALLERY_CATEGORIES: {
-  id: "koik" | GalleryCategory;
+  id: GalleryCategory;
   label: string;
   subtitle: string;
 }[] = [
-  {
-    id: "koik",
-    label: "Kõik pildid",
-    subtitle: "Valik Püssirohukeldri interjöörist, ajaloost ja meeleolukatest pidudest.",
-  },
   {
     id: "yldine",
     label: "Pildid Püssirohukeldrist",

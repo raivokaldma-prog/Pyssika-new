@@ -25,7 +25,7 @@ const HERO_IMAGE = "/images/gallery/yldine/04-jphion_pyss_1_sisevaade.jpg";
 const MATTERPORT_TOUR_URL = "https://my.matterport.com/show/?m=f5e53ekd4DF";
 
 export function GalleryPage() {
-  const [activeCategory, setActiveCategory] = useState<"koik" | GalleryCategory>("koik");
+  const [activeCategory, setActiveCategory] = useState<GalleryCategory>("yldine");
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhoto | null>(null);
 
   useEffect(() => {
@@ -33,7 +33,6 @@ export function GalleryPage() {
   }, []);
 
   const visiblePhotos = useMemo(() => {
-    if (activeCategory === "koik") return GALLERY_PHOTOS;
     return GALLERY_PHOTOS.filter((photo) => photo.category === activeCategory);
   }, [activeCategory]);
 
@@ -76,17 +75,7 @@ export function GalleryPage() {
   };
 
   const sectionsToRender = useMemo(() => {
-    const albumCats = GALLERY_CATEGORIES.filter(
-      (c): c is { id: GalleryCategory; label: string; subtitle: string } =>
-        c.id !== "koik",
-    );
-    if (activeCategory === "koik") {
-      return albumCats.map((cat) => ({
-        ...cat,
-        photos: GALLERY_PHOTOS.filter((p) => p.category === cat.id),
-      }));
-    }
-    const chosen = albumCats.find((c) => c.id === activeCategory);
+    const chosen = GALLERY_CATEGORIES.find((c) => c.id === activeCategory);
     if (!chosen) return [];
     return [
       {
@@ -97,8 +86,7 @@ export function GalleryPage() {
   }, [activeCategory]);
 
   const categoryCounts = useMemo(() => {
-    const counts: Record<"koik" | GalleryCategory, number> = {
-      koik: GALLERY_PHOTOS.length,
+    const counts: Record<GalleryCategory, number> = {
       yldine: 0,
       ajalugu: 0,
       pidu: 0,
