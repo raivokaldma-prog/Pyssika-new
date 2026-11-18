@@ -124,7 +124,7 @@ export function ProgramPage() {
                   >
                     <img
                       src={ev.image}
-                      alt={ev.title}
+                      alt=""
                       loading="lazy"
                       referrerPolicy="no-referrer"
                       className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
