@@ -169,14 +169,24 @@ export function GroupsPage() {
                   ruumi ning joogi- ja söögipoolist jätkub enam kui kindlalt.
                   Korralda meie juures sünnipäev, jõulupidu või äriüritus.
                 </p>
-                <div className="mt-7 flex items-start gap-4 border-y border-border py-5">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-primary text-primary-foreground">
-                    <Check className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <p className="font-display text-[19px] leading-7 text-accent">
-                    Ruumide rent on tasuta, kui otsustad enda keha Püssirohukeldris
-                    kosutada.
-                  </p>
+                <div className="mt-7 divide-y divide-border/80 border-y border-border">
+                  <div className="flex items-center gap-4 py-4">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-primary text-primary-foreground">
+                      <Check className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <p className="font-display text-[19px] leading-7 text-accent">
+                      Ruumide rent on tasuta, kui otsustad enda keha
+                      Püssirohukeldris kosutada.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4 py-4">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-primary text-primary-foreground">
+                      <Users className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <p className="font-display text-[19px] leading-7 text-accent">
+                      Schrammi kamber mahutab kuni 30 inimest.
+                    </p>
+                  </div>
                 </div>
               </div>
               <div className="border border-border bg-cellar-deep p-2 shadow-[0_16px_32px_rgba(0,0,0,0.22)]">
