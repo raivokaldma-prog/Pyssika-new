@@ -51,7 +51,7 @@ export function HistoryFooter() {
                   <>
                     {" "}
                     <Link
-                      to="/kontakt"
+                      to="/ajalugu"
                       className="font-bold text-[#0d0804] underline decoration-[#0d0804]/60 underline-offset-2 transition-colors hover:text-primary"
                     >
                       Loe edasi…

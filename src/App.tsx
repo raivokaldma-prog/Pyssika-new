@@ -8,6 +8,7 @@ import { GalleryPage } from "./pages/GalleryPage";
 import { BookingPage } from "./pages/BookingPage";
 import { ContactPage } from "./pages/ContactPage";
 import { ProgramPage } from "./pages/ProgramPage";
+import { HistoryPage } from "./pages/HistoryPage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -54,6 +55,7 @@ export default function App() {
         <Route path="/galerii" element={<GalleryPage />} />
         <Route path="/broneeri" element={<BookingPage />} />
         <Route path="/kontakt" element={<ContactPage />} />
+        <Route path="/ajalugu" element={<HistoryPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
