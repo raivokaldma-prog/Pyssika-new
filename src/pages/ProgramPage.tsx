@@ -133,7 +133,7 @@ export function ProgramPage() {
                     <span className="absolute top-3 left-3 flex min-w-[54px] flex-col items-center border border-brass/50 bg-cellar-deep/95 px-2.5 py-1.5 text-center shadow-md">
                       <span className="font-display text-[22px] font-bold leading-none tabular-nums text-parchment">
                         {ev.day}
-                      </span>
+                      </span>{" "}
                       <span className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-brass">
                         {ev.month}
                       </span>
