@@ -179,7 +179,10 @@ export function MugSocietyInfoPage() {
               </div>
 
               {/* Right sidebar: Emblem + quick contact */}
-              <aside className="space-y-7">
+              <section
+                aria-label="Liikmelisuse kokkuvõte ja kontakt"
+                className="space-y-7"
+              >
                 <div className="border border-border bg-background/85 p-6 text-center">
                   <img
                     src={A.mugSociety}
@@ -220,7 +223,7 @@ export function MugSocietyInfoPage() {
                     </a>
                   </div>
                 </div>
-              </aside>
+              </section>
             </div>
           </section>
         </div>

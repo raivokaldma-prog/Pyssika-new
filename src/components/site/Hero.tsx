@@ -20,9 +20,9 @@ export function Hero() {
               <br />
               otse Tartu kesklinnas
             </h1>
-            <h2 className="hero-subtitle mt-3 font-display text-[15px] italic text-shadow-cellar sm:text-[18px]">
+            <p className="hero-subtitle mt-3 font-display text-[15px] italic text-shadow-cellar sm:text-[18px]">
               Üle 300 aasta vanused kivivõlvid on 10,2m kõrgused.
-            </h2>
+            </p>
             <p className="mt-4 max-w-[460px] text-[14px] leading-relaxed text-parchment/95 text-shadow-cellar sm:text-[15px]">
               Püssirohukelder pakub lisaks ainulaadsele menüüle uskumatut elamust.
               Põnev sisearhitektuur viib sind ajas tagasi, eemale igapäeva
@@ -31,9 +31,9 @@ export function Hero() {
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
               <Link
                 to="/menuu"
-                className="inline-flex min-h-[44px] items-center bg-primary px-6 py-2.5 font-display text-[15px] tracking-wide text-primary-foreground shadow-[0_4px_14px_rgba(0,0,0,0.5)] transition-colors hover:bg-primary/85"
+                className="inline-flex min-h-[44px] items-center gap-1.5 bg-primary px-6 py-2.5 font-display text-[15px] tracking-wide text-primary-foreground shadow-[0_4px_14px_rgba(0,0,0,0.5)] transition-colors hover:bg-primary/85"
               >
-                Tutvu menüüga &gt;&gt;
+                Tutvu menüüga <span aria-hidden="true">&gt;&gt;</span>
               </Link>
               <Link
                 to="/programm"

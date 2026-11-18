@@ -525,13 +525,19 @@ export function MugSocietyJoinPage() {
               </div>
 
               {/* Right Column: 5 steps from live page + Privileges & Contacts */}
-              <aside className="space-y-8">
+              <section
+                aria-labelledby="join-steps-heading"
+                className="space-y-8"
+              >
                 {/* 5 steps from live pyss.ee/kannumeeste-seltsiga-liitumine/ */}
                 <div className="border border-border bg-background/80 p-6 sm:p-7">
                   <p className="font-display text-xs uppercase tracking-[0.24em] text-primary">
                     Samm-sammult
                   </p>
-                  <h2 className="mt-1.5 font-display text-[24px] text-accent">
+                  <h2
+                    id="join-steps-heading"
+                    className="mt-1.5 font-display text-[24px] text-accent"
+                  >
                     Kuidas Seltsiga liituda?
                   </h2>
 
@@ -624,7 +630,7 @@ export function MugSocietyJoinPage() {
                     <ChevronRight className="h-4 w-4" aria-hidden="true" />
                   </Link>
                 </div>
-              </aside>
+              </section>
             </div>
           </section>
         </div>

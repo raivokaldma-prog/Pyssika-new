@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Header } from "../components/site/Header";
 import { HistoryFooter } from "../components/site/HistoryFooter";
+import { AccessibleModal } from "../components/site/AccessibleModal";
 import { A } from "../components/site/assets";
 import { Button } from "../components/ui/button";
 import {
@@ -40,31 +41,6 @@ export function GalleryPage() {
     if (!selectedPhoto) return -1;
     return visiblePhotos.findIndex((p) => p.id === selectedPhoto.id);
   }, [visiblePhotos, selectedPhoto]);
-
-  useEffect(() => {
-    if (!selectedPhoto) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setSelectedPhoto(null);
-      } else if (e.key === "ArrowRight" && visiblePhotos.length > 1) {
-        const next = visiblePhotos[(selectedIndex + 1) % visiblePhotos.length];
-        if (next) setSelectedPhoto(next);
-      } else if (e.key === "ArrowLeft" && visiblePhotos.length > 1) {
-        const prev =
-          visiblePhotos[
-            (selectedIndex - 1 + visiblePhotos.length) % visiblePhotos.length
-          ];
-        if (prev) setSelectedPhoto(prev);
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [selectedPhoto, selectedIndex, visiblePhotos]);
 
   const stepPhoto = (direction: -1 | 1) => {
     if (!selectedPhoto || visiblePhotos.length <= 1) return;
@@ -273,9 +249,11 @@ export function GalleryPage() {
                 <a
                   href={MATTERPORT_TOUR_URL}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
-                  Ava 3D virtuaaltuur <ExternalLink aria-hidden="true" />
+                  Ava 3D virtuaaltuur
+                  <span className="sr-only"> (avaneb uues aknas)</span>{" "}
+                  <ExternalLink aria-hidden="true" />
                 </a>
               </Button>
             </div>
@@ -326,14 +304,14 @@ export function GalleryPage() {
       <HistoryFooter />
 
       {/* Fullscreen Lightbox modal */}
-      {selectedPhoto && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-cellar-deep/90 p-4 backdrop-blur-[2px]"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Suurendatud galeriifoto"
-          onClick={() => setSelectedPhoto(null)}
-        >
+      <AccessibleModal
+        open={Boolean(selectedPhoto)}
+        onClose={() => setSelectedPhoto(null)}
+        ariaLabel="Suurendatud galeriifoto"
+        onPrev={visiblePhotos.length > 1 ? () => stepPhoto(-1) : undefined}
+        onNext={visiblePhotos.length > 1 ? () => stepPhoto(1) : undefined}
+      >
+        {selectedPhoto && (
           <div
             className="relative flex max-h-[94vh] w-full max-w-[980px] flex-col overflow-hidden border border-brass/40 bg-cellar-deep text-parchment shadow-[0_24px_60px_rgba(0,0,0,0.75)]"
             onClick={(e) => e.stopPropagation()}
@@ -372,6 +350,7 @@ export function GalleryPage() {
                 )}
                 <button
                   type="button"
+                  data-modal-close
                   onClick={() => setSelectedPhoto(null)}
                   aria-label="Sulge galerii vaade"
                   className="flex h-10 w-10 items-center justify-center border border-brass/40 text-parchment/90 transition-colors hover:border-brass hover:text-brass cursor-pointer"
@@ -402,8 +381,8 @@ export function GalleryPage() {
               </div>
             )}
           </div>
-        </div>
-      )}
+        )}
+      </AccessibleModal>
     </div>
   );
 }

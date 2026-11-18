@@ -120,23 +120,25 @@ export function VirtualTour() {
           <a
             href="https://my.matterport.com/show/?m=f5e53ekd4DF"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="mt-6 inline-flex min-h-[44px] items-center border border-accent/60 px-6 py-3 font-display text-[15px] text-accent transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             Püssirohukelder 3D
+            <span className="sr-only"> (avaneb uues aknas)</span>
           </a>
         </div>
         <a
           href="https://my.matterport.com/show/?m=f5e53ekd4DF"
           target="_blank"
-          rel="noreferrer"
-          aria-label="Ava Püssirohukeldri 360° virtuaaltuur uues aknas"
+          rel="noopener noreferrer"
+          tabIndex={-1}
+          aria-hidden="true"
           className="group relative block border border-border/70 bg-cellar-deep/90 p-2 shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
         >
           <div className="relative aspect-[16/10] w-full overflow-hidden bg-cellar">
             <img
               src="/assets/aistudio/pilt_3d9e12c8.png"
-              alt="Püssirohukeldri 360° virtuaaltuuri eelvaade"
+              alt=""
               loading="lazy"
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
             />

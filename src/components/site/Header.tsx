@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 import { A } from "./assets";
@@ -15,6 +15,19 @@ const NAV = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
   return (
     <header className="relative z-30">
@@ -89,7 +102,7 @@ export function Header() {
             <button
               type="button"
               aria-pressed="true"
-              aria-label="Eesti keel"
+              aria-label="EST – eesti keel"
               className="inline-flex min-h-[36px] min-w-[36px] items-center justify-center px-1.5 font-semibold text-brass cursor-pointer"
             >
               Est
@@ -100,7 +113,8 @@ export function Header() {
             <button
               type="button"
               aria-pressed="false"
-              aria-label="English language"
+              aria-label="ENG – English"
+              lang="en"
               className="inline-flex min-h-[36px] min-w-[36px] items-center justify-center px-1.5 text-parchment/80 transition-colors hover:text-brass cursor-pointer"
             >
               Eng
@@ -108,6 +122,7 @@ export function Header() {
           </div>
 
           <button
+            ref={menuButtonRef}
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Sulge menüü" : "Ava menüü"}
@@ -159,6 +174,7 @@ export function Header() {
               <button
                 type="button"
                 aria-pressed="true"
+                aria-label="EST – eesti keel"
                 className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center font-semibold text-brass"
               >
                 Est
@@ -166,6 +182,8 @@ export function Header() {
               <button
                 type="button"
                 aria-pressed="false"
+                aria-label="ENG – English"
+                lang="en"
                 className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-parchment/80"
               >
                 Eng

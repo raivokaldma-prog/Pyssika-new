@@ -96,6 +96,18 @@ interface BookingSubmission {
   totalDeposit: number;
 }
 
+type BookingField = "date" | "time" | "name" | "email" | "guests";
+
+const FIELD_IDS: Record<BookingField, string> = {
+  date: "booking-date",
+  time: "booking-time",
+  name: "booking-name",
+  email: "booking-email",
+  guests: "booking-guests",
+};
+
+const FIELD_ORDER: BookingField[] = ["date", "time", "name", "email", "guests"];
+
 export function BookingPage() {
   const todayStr = useMemo(() => getLocalDateString(0), []);
   const tomorrowStr = useMemo(() => getLocalDateString(1), []);
@@ -107,7 +119,7 @@ export function BookingPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Partial<Record<BookingField, string>>>({});
   const [submitted, setSubmitted] = useState<BookingSubmission | null>(null);
 
   useEffect(() => {
@@ -123,41 +135,61 @@ export function BookingPage() {
   const totalDeposit = parsedGuests * DEPOSIT_PER_PERSON;
   const isSameDay = date === todayStr;
 
+  const clearFieldError = (field: BookingField) => {
+    setErrors((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  };
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
+
+    const nextErrors: Partial<Record<BookingField, string>> = {};
 
     if (!date) {
-      setError("Palun vali broneeringu kuupäev.");
-      return;
+      nextErrors.date = "Palun vali broneeringu kuupäev.";
+    } else if (date < todayStr) {
+      nextErrors.date = "Palun vali tänane või tulevane kuupäev.";
+    } else if (isSameDay) {
+      nextErrors.date =
+        "Samal päeval saab lauda broneerida ainult telefoni teel (+372 7 303 555) või kohapeal.";
     }
-    if (date < todayStr) {
-      setError("Palun vali tänane või tulevane kuupäev.");
-      return;
-    }
-    if (isSameDay) {
-      setError(
-        "Samal päeval saab lauda broneerida ainult telefoni teel (+372 7 303 555) või kohapeal.",
-      );
-      return;
-    }
+
     if (!time) {
-      setError("Palun vali sobiv kellaaeg.");
-      return;
+      nextErrors.time = "Palun vali sobiv kellaaeg.";
     }
-    if (!parsedGuests || parsedGuests < 1) {
-      setError("Palun sisesta inimeste arv (vähemalt 1).");
-      return;
-    }
+
     if (!name.trim()) {
-      setError("Palun sisesta oma nimi.");
-      return;
+      nextErrors.name = "Palun sisesta oma nimi.";
     }
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setError("Palun sisesta korrektne e-posti aadress.");
+
+    if (!email.trim()) {
+      nextErrors.email =
+        "Palun sisesta oma e-posti aadress (nt nimi@naide.ee).";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      nextErrors.email =
+        "Kontrolli, et e-posti aadressis oleks @ ja domeen, nt nimi@naide.ee.";
+    }
+
+    if (!parsedGuests || parsedGuests < 1) {
+      nextErrors.guests = "Palun sisesta inimeste arv (vähemalt 1).";
+    }
+
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      const firstInvalid = FIELD_ORDER.find((field) => nextErrors[field]);
+      if (firstInvalid) {
+        const el = document.getElementById(FIELD_IDS[firstInvalid]);
+        el?.focus();
+        el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
       return;
     }
 
+    setErrors({});
     const refNumber = `PK-${String(Math.floor(100000 + Math.random() * 900000))}`;
     setSubmitted({
       reference: refNumber,
@@ -175,7 +207,7 @@ export function BookingPage() {
 
   const handleReset = () => {
     setSubmitted(null);
-    setError(null);
+    setErrors({});
     setDate(tomorrowStr);
     setTime("19:00");
     setGuests("4");
@@ -184,6 +216,14 @@ export function BookingPage() {
     setPhone("");
     setNotes("");
   };
+
+  const errorEntries = FIELD_ORDER.filter((field) => Boolean(errors[field])).map(
+    (field) => ({
+      field,
+      id: FIELD_IDS[field],
+      message: errors[field]!,
+    }),
+  );
 
   const mailtoHref = submitted
     ? `mailto:pyss@pyss.ee?subject=${encodeURIComponent(
@@ -355,18 +395,35 @@ export function BookingPage() {
                       </p>
                     </div>
 
-                    {error && (
+                    {errorEntries.length > 0 && (
                       <div
-                        id="booking-error"
+                        id="booking-error-summary"
                         role="alert"
                         aria-live="assertive"
-                        className="mt-5 flex items-start gap-3 border border-destructive/40 bg-destructive/10 px-4 py-3 text-[14px] text-destructive"
+                        className="mt-5 border border-destructive/50 bg-destructive/10 px-4 py-3.5 text-[14px] text-destructive"
                       >
-                        <Info
-                          className="mt-0.5 h-4 w-4 shrink-0"
-                          aria-hidden="true"
-                        />
-                        <span>{error}</span>
+                        <p className="flex items-center gap-2 font-semibold">
+                          <Info
+                            className="h-4 w-4 shrink-0"
+                            aria-hidden="true"
+                          />
+                          <span>
+                            Palun kontrolli järgmisi välju ({errorEntries.length}
+                            ):
+                          </span>
+                        </p>
+                        <ul className="mt-2 list-disc space-y-1 pl-6">
+                          {errorEntries.map((item) => (
+                            <li key={item.field}>
+                              <a
+                                href={`#${item.id}`}
+                                className="underline underline-offset-2 hover:text-foreground"
+                              >
+                                {item.message}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     )}
 
@@ -387,15 +444,28 @@ export function BookingPage() {
                             value={date}
                             onChange={(e) => {
                               setDate(e.target.value);
-                              setError(null);
+                              clearFieldError("date");
                             }}
                             required
                             aria-required="true"
-                            aria-describedby={error ? "booking-error" : undefined}
-                            className="h-11 w-full border border-input bg-parchment/55 px-3.5 text-[15px] tabular-nums text-foreground transition-colors focus-visible:border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+                            aria-invalid={errors.date ? "true" : undefined}
+                            aria-describedby={
+                              errors.date ? "err-booking-date" : undefined
+                            }
+                            className={`h-11 w-full border bg-parchment/55 px-3.5 text-[15px] tabular-nums text-foreground transition-colors focus-visible:border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary ${
+                              errors.date ? "border-destructive" : "border-input"
+                            }`}
                           />
                         </div>
-                        {isSameDay && (
+                        {errors.date && (
+                          <p
+                            id="err-booking-date"
+                            className="mt-1.5 text-[13px] leading-snug text-destructive"
+                          >
+                            {errors.date}
+                          </p>
+                        )}
+                        {isSameDay && !errors.date && (
                           <p className="mt-1.5 text-[12.5px] leading-snug text-accent">
                             Samal päeval broneerimiseks helista{" "}
                             <a
@@ -420,10 +490,19 @@ export function BookingPage() {
                         <select
                           id="booking-time"
                           value={time}
-                          onChange={(e) => setTime(e.target.value)}
+                          onChange={(e) => {
+                            setTime(e.target.value);
+                            clearFieldError("time");
+                          }}
                           required
                           aria-required="true"
-                          className="mt-1.5 h-11 w-full border border-input bg-parchment/55 px-3.5 text-[15px] tabular-nums text-foreground transition-colors focus-visible:border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+                          aria-invalid={errors.time ? "true" : undefined}
+                          aria-describedby={
+                            errors.time ? "err-booking-time" : undefined
+                          }
+                          className={`mt-1.5 h-11 w-full border bg-parchment/55 px-3.5 text-[15px] tabular-nums text-foreground transition-colors focus-visible:border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary ${
+                            errors.time ? "border-destructive" : "border-input"
+                          }`}
                         >
                           {TIME_SLOTS.map((slot) => (
                             <option key={slot} value={slot}>
@@ -431,6 +510,14 @@ export function BookingPage() {
                             </option>
                           ))}
                         </select>
+                        {errors.time && (
+                          <p
+                            id="err-booking-time"
+                            className="mt-1.5 text-[13px] leading-snug text-destructive"
+                          >
+                            {errors.time}
+                          </p>
+                        )}
                       </div>
 
                       {/* Name */}
@@ -447,12 +534,28 @@ export function BookingPage() {
                           autoComplete="name"
                           placeholder="Ees- ja perekonnanimi"
                           value={name}
-                          onChange={(e) => setName(e.target.value)}
+                          onChange={(e) => {
+                            setName(e.target.value);
+                            clearFieldError("name");
+                          }}
                           required
                           aria-required="true"
-                          aria-describedby={error ? "booking-error" : undefined}
-                          className="mt-1.5 h-11 w-full border border-input bg-parchment/55 px-3.5 text-[15px] text-foreground placeholder:text-muted-foreground/80 transition-colors focus-visible:border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+                          aria-invalid={errors.name ? "true" : undefined}
+                          aria-describedby={
+                            errors.name ? "err-booking-name" : undefined
+                          }
+                          className={`mt-1.5 h-11 w-full border bg-parchment/55 px-3.5 text-[15px] text-foreground placeholder:text-muted-foreground/80 transition-colors focus-visible:border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary ${
+                            errors.name ? "border-destructive" : "border-input"
+                          }`}
                         />
+                        {errors.name && (
+                          <p
+                            id="err-booking-name"
+                            className="mt-1.5 text-[13px] leading-snug text-destructive"
+                          >
+                            {errors.name}
+                          </p>
+                        )}
                       </div>
 
                       {/* Email */}
@@ -469,12 +572,28 @@ export function BookingPage() {
                           autoComplete="email"
                           placeholder="nimi@naide.ee"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            clearFieldError("email");
+                          }}
                           required
                           aria-required="true"
-                          aria-describedby={error ? "booking-error" : undefined}
-                          className="mt-1.5 h-11 w-full border border-input bg-parchment/55 px-3.5 text-[15px] text-foreground placeholder:text-muted-foreground/80 transition-colors focus-visible:border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+                          aria-invalid={errors.email ? "true" : undefined}
+                          aria-describedby={
+                            errors.email ? "err-booking-email" : undefined
+                          }
+                          className={`mt-1.5 h-11 w-full border bg-parchment/55 px-3.5 text-[15px] text-foreground placeholder:text-muted-foreground/80 transition-colors focus-visible:border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary ${
+                            errors.email ? "border-destructive" : "border-input"
+                          }`}
                         />
+                        {errors.email && (
+                          <p
+                            id="err-booking-email"
+                            className="mt-1.5 text-[13px] leading-snug text-destructive"
+                          >
+                            {errors.email}
+                          </p>
+                        )}
                       </div>
 
                       {/* Guests */}
@@ -493,11 +612,28 @@ export function BookingPage() {
                           inputMode="numeric"
                           placeholder="nt 4"
                           value={guests}
-                          onChange={(e) => setGuests(e.target.value)}
+                          onChange={(e) => {
+                            setGuests(e.target.value);
+                            clearFieldError("guests");
+                          }}
                           required
                           aria-required="true"
-                          className="mt-1.5 h-11 w-full border border-input bg-parchment/55 px-3.5 text-[15px] tabular-nums text-foreground placeholder:text-muted-foreground/80 transition-colors focus-visible:border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+                          aria-invalid={errors.guests ? "true" : undefined}
+                          aria-describedby={
+                            errors.guests ? "err-booking-guests" : undefined
+                          }
+                          className={`mt-1.5 h-11 w-full border bg-parchment/55 px-3.5 text-[15px] tabular-nums text-foreground placeholder:text-muted-foreground/80 transition-colors focus-visible:border-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary ${
+                            errors.guests ? "border-destructive" : "border-input"
+                          }`}
                         />
+                        {errors.guests && (
+                          <p
+                            id="err-booking-guests"
+                            className="mt-1.5 text-[13px] leading-snug text-destructive"
+                          >
+                            {errors.guests}
+                          </p>
+                        )}
                         {parsedGuests >= 15 && (
                           <p className="mt-1.5 text-[12.5px] leading-snug text-muted-foreground">
                             Suuremale seltskonnale soovitame tutvuda ka{" "}
@@ -558,7 +694,11 @@ export function BookingPage() {
                           {formatEur(DEPOSIT_PER_PERSON)}
                         </span>
                       </div>
-                      <div className="mt-3 flex flex-wrap items-baseline justify-between gap-2 border-t border-border pt-3">
+                      <div
+                        role="status"
+                        aria-live="polite"
+                        className="mt-3 flex flex-wrap items-baseline justify-between gap-2 border-t border-border pt-3"
+                      >
                         <span className="font-display text-[17px] text-accent">
                           Ettemaks kokku{" "}
                           {parsedGuests > 0 ? `(${parsedGuests} in)` : ""}
@@ -590,13 +730,19 @@ export function BookingPage() {
               </div>
 
               {/* Right Column: How it works + Important rules + Direct contacts */}
-              <aside className="space-y-8">
+              <section
+                aria-labelledby="booking-guide-heading"
+                className="space-y-8"
+              >
                 {/* 4 steps from live site */}
                 <div className="border border-border bg-background/80 p-6 sm:p-7">
                   <p className="font-display text-[12px] uppercase tracking-[0.24em] text-primary">
                     Lihtne ja kiire
                   </p>
-                  <h2 className="mt-1.5 font-display text-[24px] text-accent">
+                  <h2
+                    id="booking-guide-heading"
+                    className="mt-1.5 font-display text-[24px] text-accent"
+                  >
                     Kuidas lauda broneerida
                   </h2>
 
@@ -711,7 +857,7 @@ export function BookingPage() {
                     Vaata peoruumide ja grupimenüü infot
                   </Link>
                 </div>
-              </aside>
+              </section>
             </div>
           </section>
         </div>

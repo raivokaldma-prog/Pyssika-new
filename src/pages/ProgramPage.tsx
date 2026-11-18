@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Header } from "../components/site/Header";
 import { HistoryFooter } from "../components/site/HistoryFooter";
+import { AccessibleModal } from "../components/site/AccessibleModal";
 import { A } from "../components/site/assets";
 import { Button } from "../components/ui/button";
 import {
@@ -36,33 +37,6 @@ export function ProgramPage() {
     if (!selectedEvent) return -1;
     return PROGRAM_EVENTS.findIndex((ev) => ev.id === selectedEvent.id);
   }, [selectedEvent]);
-
-  useEffect(() => {
-    if (!selectedEvent) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setSelectedEvent(null);
-      } else if (e.key === "ArrowRight" && PROGRAM_EVENTS.length > 1) {
-        const next = PROGRAM_EVENTS[(selectedIndex + 1) % PROGRAM_EVENTS.length];
-        if (next) setSelectedEvent(next);
-      } else if (e.key === "ArrowLeft" && PROGRAM_EVENTS.length > 1) {
-        const prev =
-          PROGRAM_EVENTS[
-            (selectedIndex - 1 + PROGRAM_EVENTS.length) % PROGRAM_EVENTS.length
-          ];
-        if (prev) setSelectedEvent(prev);
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [selectedEvent, selectedIndex]);
 
   const openModal = (event: ProgramEvent, mode: ModalMode) => {
     setSelectedEvent(event);
@@ -145,7 +119,7 @@ export function ProgramPage() {
                   <button
                     type="button"
                     onClick={() => openModal(ev, "poster")}
-                    aria-label={`Vaata suuremat plakatit: ${ev.title}`}
+                    aria-label={`${ev.day} ${ev.month} – ${ev.title}, vaata suuremat plakatit`}
                     className="relative block aspect-[3/4] w-full overflow-hidden bg-cellar-deep text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <img
@@ -236,15 +210,15 @@ export function ProgramPage() {
       <HistoryFooter />
 
       {/* Live-plugin style modal: Poster Lightbox OR Event Info Modal */}
-      {selectedEvent && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-cellar-deep/88 p-4 backdrop-blur-[2px]"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="program-modal-title"
-          onClick={() => setSelectedEvent(null)}
-        >
-          {modalMode === "poster" ? (
+      <AccessibleModal
+        open={Boolean(selectedEvent)}
+        onClose={() => setSelectedEvent(null)}
+        ariaLabelledBy="program-modal-title"
+        onPrev={PROGRAM_EVENTS.length > 1 ? () => stepEvent(-1) : undefined}
+        onNext={PROGRAM_EVENTS.length > 1 ? () => stepEvent(1) : undefined}
+      >
+        {selectedEvent &&
+          (modalMode === "poster" ? (
             <div
               className="relative flex max-h-[94vh] w-full max-w-[820px] flex-col overflow-hidden border border-brass/40 bg-cellar-deep text-parchment shadow-[0_24px_60px_rgba(0,0,0,0.75)]"
               onClick={(e) => e.stopPropagation()}
@@ -276,6 +250,7 @@ export function ProgramPage() {
                   </button>
                   <button
                     type="button"
+                    data-modal-close
                     onClick={() => setSelectedEvent(null)}
                     aria-label="Sulge plakat"
                     className="flex h-10 w-10 items-center justify-center border border-brass/40 text-parchment/90 transition-colors hover:border-brass hover:text-brass cursor-pointer"
@@ -340,6 +315,7 @@ export function ProgramPage() {
                   </button>
                   <button
                     type="button"
+                    data-modal-close
                     onClick={() => setSelectedEvent(null)}
                     aria-label="Sulge sündmuse info"
                     className="flex h-10 w-10 items-center justify-center border border-brass/40 text-parchment/90 transition-colors hover:border-brass hover:text-brass cursor-pointer"
@@ -409,9 +385,8 @@ export function ProgramPage() {
                 </div>
               </div>
             </div>
-          )}
-        </div>
-      )}
+          ))}
+      </AccessibleModal>
     </div>
   );
 }

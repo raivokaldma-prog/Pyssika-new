@@ -318,18 +318,21 @@ export function ContactPage() {
               </h2>
 
               {/* Key architectural measurements */}
-              <div className="mt-8 grid grid-cols-2 gap-px border border-brass/25 bg-brass/25 sm:grid-cols-3 lg:grid-cols-6">
+              <dl className="mt-8 grid grid-cols-2 gap-px border border-brass/25 bg-brass/25 sm:grid-cols-3 lg:grid-cols-6">
                 {ARCHITECTURAL_STATS.map((stat) => (
-                  <div key={stat.label} className="bg-cellar-deep p-4">
-                    <p className="font-display text-[24px] font-semibold tabular-nums text-brass">
-                      {stat.value}
-                    </p>
-                    <p className="mt-1 text-[13px] leading-snug text-parchment/85">
+                  <div
+                    key={stat.label}
+                    className="flex flex-col-reverse justify-end bg-cellar-deep p-4"
+                  >
+                    <dt className="mt-1 text-[13px] leading-snug text-parchment/85">
                       {stat.label}
-                    </p>
+                    </dt>
+                    <dd className="font-display text-[24px] font-semibold tabular-nums text-brass">
+                      {stat.value}
+                    </dd>
                   </div>
                 ))}
-              </div>
+              </dl>
 
               <div className="mt-9 grid gap-8 md:grid-cols-2">
                 <div className="space-y-4 text-[15px] leading-7 text-parchment/85">

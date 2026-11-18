@@ -225,9 +225,11 @@ export function GroupsPage() {
                   <a
                     href="https://my.matterport.com/show/?m=XdmPjt6oVTT"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
-                    Vaata virtuaaltuuri <ExternalLink aria-hidden="true" />
+                    Vaata virtuaaltuuri
+                    <span className="sr-only"> (avaneb uues aknas)</span>{" "}
+                    <ExternalLink aria-hidden="true" />
                   </a>
                 </Button>
               </div>
