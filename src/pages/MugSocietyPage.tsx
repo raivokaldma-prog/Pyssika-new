@@ -113,13 +113,9 @@ export function MugSocietyPage() {
                 size="lg"
                 className="h-12 rounded-none px-7 font-display text-[15px]"
               >
-                <a
-                  href="https://pyss.ee/kannumeeste-selts/kannumeeste-seltsiga-liitumine"
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <Link to="/kannumeeste-seltsiga-liitumine">
                   Esita taotlus <ChevronRight aria-hidden="true" />
-                </a>
+                </Link>
               </Button>
             </div>
           </section>
