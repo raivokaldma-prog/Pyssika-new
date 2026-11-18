@@ -4,7 +4,7 @@ import { A } from "./assets";
 export function Hero() {
   return (
     <section className="relative overflow-x-clip">
-      <div className="relative overflow-hidden bg-cellar-deep md:flex md:h-[360px] md:items-center lg:h-[395px]">
+      <div className="relative overflow-hidden bg-cellar-deep md:flex md:min-h-[360px] md:items-center lg:min-h-[395px]">
         {/* Scale uniformly to crop out the dark top/bottom/side vignette bands baked into Pyssslide1.jpg */}
         <img
           src={A.heroBg}
@@ -17,20 +17,20 @@ export function Hero() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgb(0 0 0 / 0.82) 0%, rgb(0 0 0 / 0.56) 44%, rgb(0 0 0 / 0.18) 74%, rgb(0 0 0 / 0.35) 100%)",
+              "linear-gradient(90deg, rgb(0 0 0 / 0.88) 0%, rgb(0 0 0 / 0.76) 46%, rgb(0 0 0 / 0.24) 76%, rgb(0 0 0 / 0.36) 100%)",
           }}
         />
-        <div className="relative mx-auto w-full max-w-[1160px] px-4 py-10 md:py-0 lg:px-6">
+        <div className="relative mx-auto w-full max-w-[1160px] px-4 py-10 md:py-8 lg:px-6">
           <div className="max-w-[540px]">
             <h1 className="font-display text-[28px] leading-[1.14] text-parchment text-shadow-cellar sm:text-[38px] lg:text-[44px]">
               Ainulaadne õllerestoran
               <br />
               otse Tartu kesklinnas
             </h1>
-            <p className="mt-3 font-display text-[15px] italic text-brass text-shadow-cellar sm:text-[18px]">
+            <p className="mt-3 font-display text-[15px] italic text-[#f3d69b] text-shadow-cellar sm:text-[18px]">
               Üle 300 aasta vanused kivivõlvid on 10,2m kõrgused.
             </p>
-            <p className="mt-4 max-w-[460px] text-[14px] leading-relaxed text-parchment/90 text-shadow-cellar sm:text-[15px]">
+            <p className="mt-4 max-w-[460px] text-[14px] leading-relaxed text-parchment/95 text-shadow-cellar sm:text-[15px]">
               Püssirohukelder pakub lisaks ainulaadsele menüüle uskumatut elamust.
               Põnev sisearhitektuur viib sind ajas tagasi, eemale igapäeva
               rutiinist. Tule veendu selles ise.
@@ -44,7 +44,7 @@ export function Hero() {
               </Link>
               <Link
                 to="/programm"
-                className="inline-flex min-h-[40px] items-center text-[14px] italic text-parchment/90 underline decoration-brass/60 underline-offset-4 transition-colors hover:text-brass"
+                className="inline-flex min-h-[40px] items-center text-[14px] italic text-parchment underline decoration-[#f3d69b]/80 underline-offset-4 transition-colors hover:text-[#f3d69b]"
               >
                 - või vaata programmi
               </Link>
