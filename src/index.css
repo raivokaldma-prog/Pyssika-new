@@ -56,7 +56,8 @@
   --radius: 0.25rem;
   --cellar: oklch(0.24 0.032 45);
   --cellar-deep: oklch(0.14 0.018 45);
-  --brass: oklch(0.75 0.11 75);
+  --brass: oklch(0.84 0.095 80);
+  --brass-hero: #faf0d7;
   --parchment: oklch(0.95 0.02 90);
   --background: oklch(0.95 0.02 90);
   --foreground: oklch(0.22 0.03 50);
@@ -157,6 +158,20 @@
 
 @utility text-shadow-cellar {
   text-shadow: 0 2px 12px rgb(0 0 0 / 0.75), 0 1px 2px rgb(0 0 0 / 0.6);
+}
+
+@utility hero-scrim {
+  background: linear-gradient(
+    90deg,
+    rgb(0 0 0 / 0.9) 0%,
+    rgb(0 0 0 / 0.84) 54%,
+    rgb(0 0 0 / 0.28) 78%,
+    rgb(0 0 0 / 0.38) 100%
+  );
+}
+
+@utility hero-subtitle {
+  color: var(--brass-hero);
 }
 
 @media (prefers-reduced-motion: reduce) {

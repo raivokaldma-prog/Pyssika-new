@@ -12,14 +12,7 @@ export function Hero() {
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 h-full w-full scale-[1.38] object-cover object-center"
         />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(90deg, rgb(0 0 0 / 0.88) 0%, rgb(0 0 0 / 0.76) 46%, rgb(0 0 0 / 0.24) 76%, rgb(0 0 0 / 0.36) 100%)",
-          }}
-        />
+        <div aria-hidden="true" className="hero-scrim absolute inset-0" />
         <div className="relative mx-auto w-full max-w-[1160px] px-4 py-10 md:py-8 lg:px-6">
           <div className="max-w-[540px]">
             <h1 className="font-display text-[28px] leading-[1.14] text-parchment text-shadow-cellar sm:text-[38px] lg:text-[44px]">
@@ -27,7 +20,7 @@ export function Hero() {
               <br />
               otse Tartu kesklinnas
             </h1>
-            <p className="mt-3 font-display text-[15px] italic text-[#f3d69b] text-shadow-cellar sm:text-[18px]">
+            <p className="hero-subtitle mt-3 font-display text-[15px] italic text-shadow-cellar sm:text-[18px]">
               Üle 300 aasta vanused kivivõlvid on 10,2m kõrgused.
             </p>
             <p className="mt-4 max-w-[460px] text-[14px] leading-relaxed text-parchment/95 text-shadow-cellar sm:text-[15px]">
@@ -44,7 +37,7 @@ export function Hero() {
               </Link>
               <Link
                 to="/programm"
-                className="inline-flex min-h-[40px] items-center text-[14px] italic text-parchment underline decoration-[#f3d69b]/80 underline-offset-4 transition-colors hover:text-[#f3d69b]"
+                className="inline-flex min-h-[40px] items-center text-[14px] italic text-parchment underline decoration-brass/80 underline-offset-4 transition-colors hover:text-brass"
               >
                 - või vaata programmi
               </Link>
