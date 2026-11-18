@@ -20,9 +20,9 @@ export function Hero() {
               <br />
               otse Tartu kesklinnas
             </h1>
-            <p className="hero-subtitle mt-3 font-display text-[15px] italic text-shadow-cellar sm:text-[18px]">
+            <h2 className="hero-subtitle mt-3 font-display text-[15px] italic text-shadow-cellar sm:text-[18px]">
               Üle 300 aasta vanused kivivõlvid on 10,2m kõrgused.
-            </p>
+            </h2>
             <p className="mt-4 max-w-[460px] text-[14px] leading-relaxed text-parchment/95 text-shadow-cellar sm:text-[15px]">
               Püssirohukelder pakub lisaks ainulaadsele menüüle uskumatut elamust.
               Põnev sisearhitektuur viib sind ajas tagasi, eemale igapäeva
