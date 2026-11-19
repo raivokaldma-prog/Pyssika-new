@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Check, ChevronDown, Menu, X } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 import { A } from "./assets";
 
@@ -13,9 +13,52 @@ const NAV = [
   { label: "Kontakt", to: "/kontakt" as const },
 ];
 
+type LangCode = "et" | "en";
+
+const LANGUAGES: { code: LangCode; label: string; ariaLabel: string }[] = [
+  { code: "et", label: "Eesti", ariaLabel: "Eesti keel" },
+  { code: "en", label: "English", ariaLabel: "English" },
+];
+
+function FlagIcon({ code, className = "h-[15px] w-[22px]" }: { code: LangCode; className?: string }) {
+  if (code === "et") {
+    return (
+      <svg
+        viewBox="0 0 33 21"
+        aria-hidden="true"
+        className={`shrink-0 rounded-[2px] ring-1 ring-white/25 ${className}`}
+      >
+        <rect width="33" height="7" y="0" fill="#0072CE" />
+        <rect width="33" height="7" y="7" fill="#000000" />
+        <rect width="33" height="7" y="14" fill="#FFFFFF" />
+      </svg>
+    );
+  }
+  return (
+    <svg
+      viewBox="0 0 60 36"
+      aria-hidden="true"
+      className={`shrink-0 rounded-[2px] ring-1 ring-white/25 ${className}`}
+    >
+      <rect width="60" height="36" fill="#012169" />
+      <path d="M0,0 L60,36 M60,0 L0,36" stroke="#FFFFFF" strokeWidth="6" />
+      <path d="M0,0 L60,36 M60,0 L0,36" stroke="#C8102E" strokeWidth="3.2" />
+      <path d="M30,0 V36 M0,18 H60" stroke="#FFFFFF" strokeWidth="10" />
+      <path d="M30,0 V36 M0,18 H60" stroke="#C8102E" strokeWidth="6" />
+    </svg>
+  );
+}
+
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [lang, setLang] = useState<LangCode>("et");
+  const [langOpen, setLangOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const langButtonRef = useRef<HTMLButtonElement>(null);
+  const langContainerRef = useRef<HTMLDivElement>(null);
+
+  const activeLanguage =
+    LANGUAGES.find((item) => item.code === lang) ?? LANGUAGES[0];
 
   useEffect(() => {
     if (!open) return;
@@ -28,6 +71,36 @@ export function Header() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
+
+  useEffect(() => {
+    if (!langOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setLangOpen(false);
+        langButtonRef.current?.focus();
+      }
+    };
+    const onPointerDown = (e: MouseEvent) => {
+      if (
+        langContainerRef.current &&
+        !langContainerRef.current.contains(e.target as Node)
+      ) {
+        setLangOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    document.addEventListener("mousedown", onPointerDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onPointerDown);
+    };
+  }, [langOpen]);
+
+  const selectLanguage = (code: LangCode) => {
+    setLang(code);
+    setLangOpen(false);
+    langButtonRef.current?.focus();
+  };
 
   return (
     <header className="relative z-30">
@@ -94,31 +167,68 @@ export function Header() {
             ))}
           </nav>
 
+          {/* Compact single-flag language dropdown */}
           <div
-            role="group"
-            aria-label="Keelevalik"
-            className="hidden shrink-0 items-center gap-1 border-l border-brass/30 pl-3 text-[13px] uppercase tracking-widest md:flex"
+            ref={langContainerRef}
+            className="relative hidden shrink-0 border-l border-brass/30 pl-3 md:block"
           >
             <button
+              ref={langButtonRef}
               type="button"
-              aria-pressed="true"
-              aria-label="EST – eesti keel"
-              className="inline-flex min-h-[36px] min-w-[36px] items-center justify-center px-1.5 font-semibold text-brass cursor-pointer"
+              onClick={() => setLangOpen((v) => !v)}
+              aria-expanded={langOpen}
+              aria-haspopup="menu"
+              aria-controls="header-lang-menu"
+              aria-label={`Keelevalik: ${activeLanguage.ariaLabel}`}
+              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-sm px-2 text-parchment/90 transition-colors hover:bg-white/5 hover:text-brass cursor-pointer"
             >
-              Est
+              <FlagIcon code={activeLanguage.code} />
+              <ChevronDown
+                aria-hidden="true"
+                className={`h-3.5 w-3.5 text-brass/90 transition-transform duration-150 ${
+                  langOpen ? "rotate-180" : ""
+                }`}
+              />
             </button>
-            <span aria-hidden="true" className="text-parchment/40">
-              |
-            </span>
-            <button
-              type="button"
-              aria-pressed="false"
-              aria-label="ENG – English"
-              lang="en"
-              className="inline-flex min-h-[36px] min-w-[36px] items-center justify-center px-1.5 text-parchment/80 transition-colors hover:text-brass cursor-pointer"
-            >
-              Eng
-            </button>
+
+            {langOpen && (
+              <div
+                id="header-lang-menu"
+                role="menu"
+                aria-label="Vali keel"
+                className="absolute right-0 top-full z-40 mt-2 min-w-[144px] border border-brass/35 bg-cellar-deep py-1 shadow-[0_12px_28px_rgba(0,0,0,0.6)]"
+              >
+                {LANGUAGES.map((item) => {
+                  const isActive = item.code === lang;
+                  return (
+                    <button
+                      key={item.code}
+                      type="button"
+                      role="menuitemradio"
+                      aria-checked={isActive}
+                      lang={item.code}
+                      onClick={() => selectLanguage(item.code)}
+                      className={`flex min-h-[40px] w-full items-center justify-between gap-3 px-3.5 py-2 text-left text-[14px] transition-colors cursor-pointer ${
+                        isActive
+                          ? "bg-white/8 font-semibold text-brass"
+                          : "text-parchment/90 hover:bg-white/5 hover:text-brass"
+                      }`}
+                    >
+                      <span className="flex items-center gap-2.5">
+                        <FlagIcon code={item.code} />
+                        <span>{item.label}</span>
+                      </span>
+                      {isActive && (
+                        <Check
+                          className="h-3.5 w-3.5 shrink-0 text-brass"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <button
@@ -169,25 +279,28 @@ export function Header() {
             <div
               role="group"
               aria-label="Keelevalik"
-              className="flex gap-2 pt-3 text-xs uppercase tracking-widest md:hidden"
+              className="flex items-center gap-3 pt-3 md:hidden"
             >
-              <button
-                type="button"
-                aria-pressed="true"
-                aria-label="EST – eesti keel"
-                className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center font-semibold text-brass"
-              >
-                Est
-              </button>
-              <button
-                type="button"
-                aria-pressed="false"
-                aria-label="ENG – English"
-                lang="en"
-                className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-parchment/80"
-              >
-                Eng
-              </button>
+              {LANGUAGES.map((item) => {
+                const isActive = item.code === lang;
+                return (
+                  <button
+                    key={item.code}
+                    type="button"
+                    aria-pressed={isActive}
+                    lang={item.code}
+                    onClick={() => setLang(item.code)}
+                    className={`inline-flex min-h-[44px] items-center gap-2 rounded-sm border px-3 py-2 text-sm transition-colors cursor-pointer ${
+                      isActive
+                        ? "border-brass/60 bg-white/8 font-semibold text-brass"
+                        : "border-brass/20 text-parchment/85 hover:border-brass/40 hover:text-brass"
+                    }`}
+                  >
+                    <FlagIcon code={item.code} />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </nav>
         </div>
