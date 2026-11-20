@@ -729,11 +729,39 @@ export function BookingPage() {
                 )}
               </div>
 
-              {/* Right Column: How it works + Important rules + Direct contacts */}
+              {/* Right Column: Opening hours + How it works + Important rules + Direct contacts */}
               <section
                 aria-labelledby="booking-guide-heading"
                 className="space-y-8"
               >
+                {/* Prominent opening hours card matching ContactPage */}
+                <div className="border border-border bg-background/90 p-6 sm:p-7">
+                  <div className="flex items-center gap-2.5 text-primary">
+                    <Clock3 className="h-5 w-5" aria-hidden="true" />
+                    <p className="font-display text-[12px] uppercase tracking-[0.24em]">
+                      Oleme avatud
+                    </p>
+                  </div>
+                  <dl className="mt-5 space-y-3">
+                    <div className="flex items-baseline justify-between gap-4 border-b border-border/70 pb-3">
+                      <dt className="font-display text-[17px] text-accent">
+                        Pühapäev – Teisipäev (P–T)
+                      </dt>
+                      <dd className="shrink-0 font-display text-[19px] font-semibold tabular-nums text-primary">
+                        12:00 – 22:00
+                      </dd>
+                    </div>
+                    <div className="flex items-baseline justify-between gap-4">
+                      <dt className="font-display text-[17px] text-accent">
+                        Kolmapäev – Laupäev (K–L)
+                      </dt>
+                      <dd className="shrink-0 font-display text-[19px] font-semibold tabular-nums text-primary">
+                        12:00 – 01:00
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+
                 {/* 4 steps from live site */}
                 <div className="border border-border bg-background/80 p-6 sm:p-7">
                   <p className="font-display text-[12px] uppercase tracking-[0.24em] text-primary">

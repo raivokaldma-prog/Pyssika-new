@@ -65,30 +65,43 @@ export function HistoryFooter() {
       </section>
 
       <footer className="bg-cellar-deep">
-        <div className="mx-auto flex max-w-[1160px] flex-col gap-1 px-4 py-3 text-[13.5px] text-parchment/85 sm:flex-row sm:items-center sm:justify-between lg:px-6">
-          <p>
-            <Link
-              to="/"
-              className="font-display text-parchment transition-colors hover:text-brass"
-            >
-              Püssirohukelder
-            </Link>{" "}
-            - Lossi 28, Tartu, Tel.{" "}
-            <a
-              href="tel:+3727303555"
-              className="underline decoration-parchment/40 underline-offset-4 transition-colors hover:text-brass"
-            >
-              +372 7 303 555
-            </a>{" "}
-            &nbsp;|&nbsp; Moonaladu OÜ
-          </p>
+        <div className="mx-auto flex max-w-[1160px] flex-col gap-1.5 px-4 py-3.5 text-[13.5px] text-parchment/85 md:flex-row md:items-center md:justify-between lg:px-6">
+          <div className="flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3 sm:gap-y-1">
+            <p>
+              <Link
+                to="/"
+                className="font-display text-parchment transition-colors hover:text-brass"
+              >
+                Püssirohukelder
+              </Link>{" "}
+              – Lossi 28, Tartu, Tel.{" "}
+              <a
+                href="tel:+3727303555"
+                className="underline decoration-parchment/40 underline-offset-4 transition-colors hover:text-brass"
+              >
+                +372 7 303 555
+              </a>{" "}
+              <span aria-hidden="true" className="text-parchment/40">
+                |
+              </span>{" "}
+              Moonaladu OÜ
+            </p>
+            <p className="tabular-nums text-parchment/90">
+              <span aria-hidden="true" className="mr-3 hidden text-parchment/40 sm:inline">
+                |
+              </span>
+              <span className="text-brass">Avatud:</span> P–T 12:00–22:00 · K–L
+              12:00–01:00
+            </p>
+          </div>
           <a
             href="https://www.facebook.com/pyssirohukelder"
             target="_blank"
-            rel="noreferrer"
-            className="inline-flex min-h-[36px] items-center underline decoration-parchment/40 underline-offset-4 transition-colors hover:text-brass"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-[36px] shrink-0 items-center underline decoration-parchment/40 underline-offset-4 transition-colors hover:text-brass"
           >
             Facebook
+            <span className="sr-only"> (avaneb uues aknas)</span>
           </a>
         </div>
       </footer>

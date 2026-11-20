@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, ChevronDown, Menu, X } from "lucide-react";
+import { Check, ChevronDown, Clock3, MapPin, Menu, Phone, X } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 import { A } from "./assets";
 
@@ -112,6 +112,46 @@ export function Header() {
         Liigu põhisisu juurde
       </a>
 
+      {/* Top utility info bar: opening hours, address & phone visible on every page */}
+      <div className="border-b border-brass/20 bg-[#0d0804] text-[12.5px] text-parchment/90">
+        <div className="mx-auto flex max-w-[1160px] flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-1.5 lg:px-6">
+          <p className="flex items-center gap-1.5 tabular-nums">
+            <Clock3
+              className="h-3.5 w-3.5 shrink-0 text-brass"
+              aria-hidden="true"
+            />
+            <span className="text-brass">Avatud:</span>
+            <span className="hidden sm:inline">
+              P–T 12:00–22:00 &nbsp;·&nbsp; K–L 12:00–01:00
+            </span>
+            <span className="sm:hidden">P–T 12–22 · K–L 12–01</span>
+          </p>
+
+          <div className="flex items-center gap-4">
+            <Link
+              to="/kontakt"
+              className="hidden items-center gap-1.5 transition-colors hover:text-brass md:inline-flex"
+            >
+              <MapPin
+                className="h-3.5 w-3.5 shrink-0 text-brass"
+                aria-hidden="true"
+              />
+              <span>Lossi 28, Tartu</span>
+            </Link>
+            <a
+              href="tel:+3727303555"
+              className="inline-flex items-center gap-1.5 tabular-nums transition-colors hover:text-brass"
+            >
+              <Phone
+                className="h-3.5 w-3.5 shrink-0 text-brass"
+                aria-hidden="true"
+              />
+              <span>+372 7 303 555</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
       <div
         className="relative"
         style={{
@@ -121,10 +161,10 @@ export function Header() {
         }}
       >
         <div className="mx-auto flex h-[72px] max-w-[1160px] items-center gap-4 px-4 md:h-[86px] lg:px-6">
-          {/* Logo composition — intentionally overflows the header bar */}
+          {/* Logo composition — flush with top of nav bar, hanging cleanly downward */}
           <Link
             to="/"
-            className="relative block shrink-0"
+            className="relative block shrink-0 self-start"
             aria-label="Püssirohukelder – avaleht"
           >
             <span className="relative block h-[86px] w-[132px] md:h-[112px] md:w-[172px]">
